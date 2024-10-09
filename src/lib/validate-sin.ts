@@ -38,8 +38,3 @@ function validateLuhn(sin: string) {
   const sum = secondDigitsDoubled.reduce((acc, d) => acc + d, 0);
   return sum % 10 === 0;
 }
-
-type ValidateSinResult = {
-  valid: boolean;
-  reason: string;
-};
