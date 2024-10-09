@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Elective SIN Validator
 
-## Getting Started
+## Mehrdad Youssefi
 
-First, run the development server:
+### How to run the code
 
+1. Clone the repository
+2. Run the following command in the terminal:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Run the following command in the terminal:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### How to run the tests
 
-## Learn More
+1. Run the following command in the terminal:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Assumptions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- We are running this validator at the frontend. However, this function: `lib/validate-sin.ts` can be used at the
+  backend as well.
+- Using Next.js as the frontend framework.
+- Using React as the frontend library.
+- Using TypeScript as the programming language.
+- Using tailwindcss as the CSS framework.
+- Using Jest as the testing framework.
+- A simple text input is used to get the SIN from the user.
+- Another approach could be to create a group of side-by-side input fields for each digit of the SIN. I assumed this
+  approach is not required for this task.
 
-## Deploy on Vercel
+### Approach
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Created a function that can validate the SIN and returns a reason of failure if the SIN is invalid.
+- Created a react hook that can handle the input and validate the SIN.
+- Created a `<SinValidator />` component that uses the hook and displays the result of the validation.
+- Additional components created to show the icon cues and the error message.
+- Unit tests added for all functions and components.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Logic
+
+The validation function does the following steps one by one:
+
+```typescript
+export function validateSin(sin: string) {
+  // ...
+}
+```
+
+1. Check the length of the SIN. It should be 9 digits. If not, returns with an error message.
+2. Check if the SIN contains only digits. If not, returns with an error message.
+3. Check if the SIN satisfies the Luhn algorithm. If not, returns with an error message.
+
+The logic for the Luhn algorithm is as follows:
+
+1. Extract all the digits
+
+```typescript
+  const digits = sin.split("").map(Number);
+```
+
+2. Loop through all the digits.
+
+```typescript
+  digits.map((d, i) => {
+```
+
+3. If the index of the digit is even, double the digit.
+
+```typescript
+  const secondDigitsDoubled = digits.map((d, i) => {
+  if (i % 2 === 0) {
+    return d;
+  }
+  const doubled = d * 2;
+...
+});
+```
+
+4. If the doubled digit is greater than 9, subtract 9 from it. (In the PDF file it says to sum the digits if the doubled
+   digit is greater than 9, this gives the same results for single digits)
+
+```typescript
+if (doubled > 9) {
+  return doubled - 9;
+}
+return doubled;
+```
+
+5. Sum all the digits.
+
+```typescript
+  const sum = secondDigitsDoubled.reduce((acc, d) => acc + d, 0);
+```
+
+6. If the sum is divisible by 10, the SIN is valid.
+
+```typescript
+  return sum % 10 === 0;
+```
