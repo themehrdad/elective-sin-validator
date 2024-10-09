@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
-import { describe, expect, it } from "@jest/globals";
 import { validateSin } from "@/lib/validate-sin";
+import { describe, expect, it } from "@jest/globals";
 
 describe("validate-sin", () => {
   it("should fail if the sin has less than 9 characters", () => {
