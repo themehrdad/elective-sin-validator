@@ -20,6 +20,13 @@ export default function StatusIcon({ valid, unknown }: StatusIconProps) {
     : valid
       ? "text-green-500"
       : "text-red-500";
+  const role = unknown ? "question" : valid ? "checkmark" : "alert";
 
-  return <IconType aria-hidden="true" className={`h-5 w-5 ${color}`} />;
+  return (
+    <IconType
+      data-testid={role}
+      aria-hidden="true"
+      className={`h-5 w-5 ${color} icon-${IconType.displayName}`}
+    />
+  );
 }
